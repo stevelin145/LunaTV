@@ -1,7 +1,7 @@
 name: Build LunaTV Static Files
 
 on:
-  workflow_dispatch:  # 仅手动触发
+  workflow_dispatch:
 
 jobs:
   build:
@@ -14,20 +14,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          # 删掉了 cache: 'npm'，解决锁文件缺失的问题
+
+      - name: Install pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: pnpm install --legacy-peer-deps
 
       - name: Build static files
         env:
           USERNAME: root
-          PASSWORD: 888888          # 👈 这里改成你自己的密码
+          PASSWORD: 888888
           NEXT_PUBLIC_STORAGE_TYPE: kvrocks
-        run: npm run build
+        run: pnpm build
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: lunatv-static
-          path: dist
+          path: out
