@@ -1,3 +1,8 @@
+name: Build LunaTV Static Files
+
+on:
+  workflow_dispatch:  # 仅手动触发（网页点 Run workflow）
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -8,16 +13,16 @@ jobs:
       - name: Setup Node.js 18
         uses: actions/setup-node@v4
         with:
-          node-version: 18  # 换成 LunaTV 更稳定的 Node 18 版本
+          node-version: 18
           cache: 'npm'
 
-      - name: Install dependencies (with legacy peer deps)
+      - name: Install dependencies
         run: npm install --legacy-peer-deps
 
       - name: Build static files
         env:
           USERNAME: root
-          PASSWORD: 888888  # 这里写你自己的密码
+          PASSWORD: 888888          # 👈 密码直接写死在这里
           NEXT_PUBLIC_STORAGE_TYPE: kvrocks
         run: npm run build
 
