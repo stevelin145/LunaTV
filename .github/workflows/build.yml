@@ -25,9 +25,18 @@ jobs:
 
       - name: Build static files
         env:
+          # 基础账号配置
           USERNAME: root
           PASSWORD: 888888
+          
+          # 存储类型配置
           NEXT_PUBLIC_STORAGE_TYPE: kvrocks
+          
+          # 补充必要的数据库/存储占位变量（避免构建报错）
+          KVROCKS_HOST: localhost
+          KVROCKS_PORT: 6666
+          KVROCKS_PASSWORD: ""
+          KVROCKS_DB: 0
         run: pnpm build
 
       - name: Upload build artifact
