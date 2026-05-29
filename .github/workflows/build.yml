@@ -1,7 +1,6 @@
-name: Build LunaTV Static Files
-
+name: Build LunaTV Static Files (Official Config)
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # 手动触发构建
 
 jobs:
   build:
@@ -10,37 +9,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 18
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      - name: Install pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
+      - name: Enable pnpm
+        run: corepack enable
 
-      - name: Install dependencies
-        run: pnpm install --strict-peer-dependencies=false
-
-      - name: Build static files
+      # 严格按照官方命令构建
+      - name: Install & Build (Official Command)
         env:
-          # 基础账号配置
           USERNAME: root
           PASSWORD: 888888
-          
-          # 存储类型配置
-          NEXT_PUBLIC_STORAGE_TYPE: kvrocks
-          
-          # 补充必要的数据库/存储占位变量（避免构建报错）
-          KVROCKS_HOST: localhost
-          KVROCKS_PORT: 6666
-          KVROCKS_PASSWORD: ""
-          KVROCKS_DB: 0
-        run: pnpm build
+        run: pnpm install --frozen-lockfile && pnpm run pages:build
 
-      - name: Upload build artifact
+      # 上传官方指定的输出目录
+      - name: Upload static files
         uses: actions/upload-artifact@v4
         with:
           name: lunatv-static
-          path: out
+          path: .vercel/output/static
