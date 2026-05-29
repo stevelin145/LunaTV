@@ -1,15 +1,17 @@
-name: Build LunaTV Static Files (Official Config)
+name: Build Only (No Deploy)
 on:
-  workflow_dispatch:  # 手动触发构建
+  workflow_dispatch: 手动触发
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      USERNAME: root
+      PASSWORD: 888888
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -17,16 +19,11 @@ jobs:
       - name: Enable pnpm
         run: corepack enable
 
-      # 严格按照官方命令构建
-      - name: Install & Build (Official Command)
-        env:
-          USERNAME: root
-          PASSWORD: 888888
+      - name: Install & Build（官方命令）
         run: pnpm install --frozen-lockfile && pnpm run pages:build
 
-      # 上传官方指定的输出目录
-      - name: Upload static files
+      - name: Upload 静态包
         uses: actions/upload-artifact@v4
         with:
-          name: lunatv-static
+          name: static-files
           path: .vercel/output/static
